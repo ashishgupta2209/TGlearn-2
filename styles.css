@@ -208,8 +208,8 @@ body.fade-out {
   .icon-wrapper .ripple {
     position: absolute;
     border-radius: 50%;
-    background: rgba(240, 240, 240, 0.3);
-    transform: scale(1);
+    background: rgba(240, 240, 240, 0.158);
+    transform: scale(2);
     pointer-events: none;
     z-index: 1;
     animation: ripple-animation 600ms linear;
