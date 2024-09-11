@@ -192,6 +192,14 @@
                 opacity: 0;
             }
         }
+
+        /* Removes blue highlight on clickable elements */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; /* Prevents text selection */
+  user-select: none; /* Prevents text selection for non-webkit browsers */
+}
+
     </style>
 </head>
 
