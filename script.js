@@ -49,11 +49,11 @@ document.addEventListener("DOMContentLoaded", function () {
 // Bottom navbar things ends here
 
 
-// inspect preventer starts here
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-// inspect preventer ends here
+// // inspect preventer starts here
+// document.addEventListener('contextmenu', function (e) {
+//     e.preventDefault();
+// });
+// // inspect preventer ends here
 
 // Set class name dynamically
 document.addEventListener("DOMContentLoaded", function () {
@@ -114,8 +114,8 @@ document.querySelectorAll('.icon-wrapper').forEach(icon => {
       // Trigger ripple immediately
       ripple.style.animation = 'ripple-animation 600ms linear';
 
-      // Redirect instantly, no delay
-      window.location.href = 'settings.html';
+    //   // Redirect instantly, no delay
+    //   window.location.href = 'settings.html';
     });
   });
 

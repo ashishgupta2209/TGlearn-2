@@ -196,9 +196,6 @@ body.fade-out {
     color: #ccc;
 }
 
-
-
-
 .icon-wrapper {
     position: absolute;
     display: inline-block;
@@ -236,4 +233,6 @@ body.fade-out {
     -webkit-user-select: none; /* Prevents text selection */
     user-select: none; /* Prevents text selection for non-webkit browsers */
   }
+  
+
   
