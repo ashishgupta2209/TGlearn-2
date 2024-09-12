@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const board = localStorage.getItem('selectedBoard');
             const userClass = localStorage.getItem('selectedClass');
             const type = localStorage.getItem('selectedType');
+            const subject = localStorage.getItem('selectedSubject');
 
             // Add event listeners to handle navigation clicks
             document.getElementById('home').addEventListener('click', function () {
@@ -22,25 +23,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem('lastPage', 'home');
             });
 
-            document.getElementById('lessons').addEventListener('click', function () {
+            document.getElementById('continue').addEventListener('click', function () {
                 const lastLessonPage = localStorage.getItem('lastLessonPage');
                 if (lastLessonPage && lastLessonPage !== 'home.html') {
-                    window.location.href = `${lastLessonPage}?board=${board}&class=${userClass}&type=${type}`;
+                    window.location.href = `${lastLessonPage}?board=${board}&class=${userClass}&subject=${subject}&type=${type}`;
                 } else {
                     window.location.href = 'nothinghere.html';
                 }
-                localStorage.setItem('lastPage', 'lessons');
+                localStorage.setItem('lastPage', 'continue');
             });
 
             // Get the current page URL
             const currentPage = window.location.pathname.split('/').pop(); // Get the current file name (e.g., home.html)
 
-            // If on home.html, select home, otherwise select lessons
+            // If on home.html, select home, otherwise select continue
             if (currentPage === 'home.html' || currentPage === '') {
                 document.getElementById('home').classList.add('selected');
             } else {
-                document.getElementById('lessons').classList.add('selected');
-                localStorage.setItem('lastPage', 'lessons');  // Track that the last visited page is lessons
+                document.getElementById('continue').classList.add('selected');
+                localStorage.setItem('lastPage', 'continue');  // Track that the last visited page is continue
                 localStorage.setItem('lastLessonPage', currentPage);  // Track the current lesson page
             }
         });

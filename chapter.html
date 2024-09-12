@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapters</title>
+    <link rel="stylesheet" href="styles.css"> <!-- General styles for navbar and body -->
+    <link rel="stylesheet" href="chapters.css"> <!-- Separate styles for chapters content -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            padding-top: 110px !important;
+        }
+        .title h2 {
+            font-size: 1.8rem;
+        }
+        .navbar {
+            padding-left: 10px !important;
+            padding-block: 22px !important;
+        }
+        .spancontainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #subjectTitle {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+        .content {
+            padding-top: 10px !important;
+        }
+        .chapter-container {
+            margin-bottom: 20px;
+        }
+        .section-container {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .box {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header with back button and 'Chapters' title -->
+    <nav class="navbar">
+        <div class="back-button icon-wrapper"
+            onclick="window.location.href='subject.html?board=' + encodeURIComponent(board) + '&class=' + encodeURIComponent(userClass) + '&type=' + encodeURIComponent(type);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </div>
+        <div class="title">
+            <h2>Chapters</h2>
+        </div>
+    </nav>
+
+    <div class="spancontainer">
+        <span id="subjectTitle"></span>
+    </div>
+
+    <!-- Main Content: Chapters List -->
+    <section class="chapter-container" id="chapterContainer">
+        <!-- Chapters and sections will be populated dynamically here -->
+    </section>
+
+    <!-- Bottom Navbar -->
+    <div id="bottom-navbar"></div> <!-- Placeholder for the navbar -->
+
+    <!-- Script for handling navbar and dynamic chapter listing -->
+    <script src="script.js"></script>
+
+    <script>
+    // Get board, class, subject, and type from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const board = urlParams.get('board');
+    const userClass = urlParams.get('class');
+    const subject = urlParams.get('subject');
+    const type = urlParams.get('type');
+
+    // Set up the back button functionality
+    document.querySelector('.back-button').onclick = function () {
+        window.location.href = `subject.html?board=${board}&class=${userClass}&type=${type}`;
+    };
+
+    // Display the subject name in the title
+    document.getElementById('subjectTitle').textContent = subject;
+
+    // Fetch the chapters from the CSV file
+    fetch(`Chapters/chapters_${board}_${userClass}_${subject}.csv`)
+        .then(response => response.text())
+        .then(csvData => {
+            const rows = csvData.split('\n');
+            const chapterContainer = document.getElementById('chapterContainer');
+            let currentSection = null;
+
+            rows.forEach(row => {
+                const [sectionOrId, name] = row.split(',', 2);
+                
+                if (sectionOrId.toLowerCase() === 'section' && name) {
+                    // This is a section header (e.g., "Varnika", "Godhuli")
+                    const sectionBox = document.createElement('div');
+                    sectionBox.className = 'section-container';
+                    sectionBox.innerHTML = `<h3>${name.trim()}</h3>`;
+                    chapterContainer.appendChild(sectionBox);
+                    currentSection = sectionBox; // Set this as the current section container
+                } else if (name) {
+                    // This is a chapter under the current section
+                    const chapterBox = document.createElement('div');
+                    chapterBox.className = 'chapter-box';
+                    chapterBox.innerHTML = `<h4>${sectionOrId.trim()} ${name.trim()}</h4>`;
+                    if (currentSection) {
+                        currentSection.appendChild(chapterBox); // Add to the current section
+                    } else {
+                        console.warn('Chapter found without a section:', name);
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error loading chapters:', error));
+
+    // Track the current chapter page URL
+    localStorage.setItem('lastPage', window.location.href);
+    // Store subject in localStorage
+    localStorage.setItem('selectedSubject', subject);
+    </script>
+
+</body>
+
+</html>
