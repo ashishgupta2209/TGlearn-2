@@ -136,7 +136,7 @@ document.querySelectorAll('a').forEach(link => {
         
         setTimeout(() => {
             window.location.href = href; // Navigate after delay
-        }, 500); // Delay matches the CSS transition time
+        }, 170); // Delay matches the CSS transition time
     });
 });
 
