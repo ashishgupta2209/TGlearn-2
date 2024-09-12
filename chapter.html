@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapters</title>
     <link rel="stylesheet" href="styles.css"> <!-- General styles for navbar and body -->
-    <link rel="stylesheet" href="chapters.css"> <!-- Separate styles for chapters content -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
@@ -40,6 +39,11 @@
         }
         .box {
             margin-bottom: 10px;
+        }
+        
+        .icon-wrapper {
+            position: relative !important;
+            width: 47px;
         }
     </style>
 </head>
@@ -77,8 +81,11 @@
     const urlParams = new URLSearchParams(window.location.search);
     const board = urlParams.get('board');
     const userClass = urlParams.get('class');
-    const subject = urlParams.get('subject');
+    let subject = urlParams.get('subject');
     const type = urlParams.get('type');
+
+    // Handle spaces in subject name (replace with underscores for file matching)
+    subject = subject.replace(/\s+/g, '_');
 
     // Set up the back button functionality
     document.querySelector('.back-button').onclick = function () {
@@ -86,11 +93,19 @@
     };
 
     // Display the subject name in the title
-    document.getElementById('subjectTitle').textContent = subject;
+    document.getElementById('subjectTitle').textContent = subject.replace(/_/g, ' '); // Show subject name with spaces
 
     // Fetch the chapters from the CSV file
-    fetch(`Chapters/chapters_${board}_${userClass}_${subject}.csv`)
-        .then(response => response.text())
+    const csvFilePath = `Chapters/chapters_${board}_${userClass}_${subject}.csv`;
+    console.log(`Fetching chapters from: ${csvFilePath}`); // Debug: log the file path
+
+    fetch(csvFilePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
         .then(csvData => {
             const rows = csvData.split('\n');
             const chapterContainer = document.getElementById('chapterContainer');
@@ -98,7 +113,7 @@
 
             rows.forEach(row => {
                 const [sectionOrId, name] = row.split(',', 2);
-                
+
                 if (sectionOrId.toLowerCase() === 'section' && name) {
                     // This is a section header (e.g., "Varnika", "Godhuli")
                     const sectionBox = document.createElement('div');
@@ -114,7 +129,7 @@
                     if (currentSection) {
                         currentSection.appendChild(chapterBox); // Add to the current section
                     } else {
-                        console.warn('Chapter found without a section:', name);
+                        chapterContainer.appendChild(chapterBox); // Add directly if no section
                     }
                 }
             });
@@ -124,7 +139,7 @@
     // Track the current chapter page URL
     localStorage.setItem('lastPage', window.location.href);
     // Store subject in localStorage
-    localStorage.setItem('selectedSubject', subject);
+    localStorage.setItem('selectedSubject', subject.replace(/_/g, ' ')); // Store subject with spaces
     </script>
 
 </body>
