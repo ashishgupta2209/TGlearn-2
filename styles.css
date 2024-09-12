@@ -217,7 +217,9 @@ body.fade-out {
     color: #ccc;
 }
 
-/* ripple effect things starts here */
+/* main ends here */
+
+/* ripple effect things starts here for home, settings,subject,chapter <back button> */
 
 .icon-wrapper {
     position: absolute;
@@ -253,7 +255,8 @@ body.fade-out {
 /* ripple effect things ends here */
 
 
-/* chapters.css */
+/* chapters css starts here */
+
 
 .chapter-container {
     display: flex;
@@ -264,25 +267,27 @@ body.fade-out {
 }
 
 .section-container {
-    background-color: #353535;
-    border: 2px solid #353535;
+    background-color: #292929;
+    border: 2px solid #292929;
     border-radius: 8px;
-    padding: 15px;
+    padding: 7px;
     margin-bottom: 20px;
 }
 
 .chapter-box {
-    background-color: #353535;
-    border: 1px solid #474747;
+    background-color: #292929;
+    border: 1px solid #292929;
     border-radius: 8px;
     padding: 10px;
     margin-top: 10px;
+    position: relative; /* Add this to allow positioning of the chevron */
 }
 
-h3 {
-    font-size: 1.2rem;
+.section-container h3 {
+    font-size: 1.6rem;
     font-weight: 600;
     color: #ffffff;
+    margin-left: 10px;
 }
 
 h4 {
@@ -291,3 +296,35 @@ h4 {
     margin: 0;
     padding: 5px 0;
 }
+
+/* New styles for chevron icon */
+.chapter-box {
+    display: flex; /* Allows for flex positioning */
+    justify-content: space-between; /* Aligns text and icon to opposite ends */
+    align-items: center; /* Centers content vertically */
+}
+
+.chapter-box i {
+    font-size: 1rem; /* Adjust size if needed */
+    color: #ffffff; /* Adjust color if needed */
+}
+
+/* ripple chapter */
+
+.ripple-chapter {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(240, 240, 240, 0.3);
+    transform: scale(3);
+    animation: ripple-animation 0.9s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* chapter css ends here */

@@ -1706,3 +1706,538 @@ chapter.html
 
 </html>
 
+
+
+chapter.html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapters</title>
+    <link rel="stylesheet" href="styles.css"> <!-- General styles for navbar and body -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            padding-top: 110px !important;
+        }
+        .title h2 {
+            font-size: 1.8rem;
+        }
+        .navbar {
+            padding-left: 10px !important;
+            padding-block: 22px !important;
+        }
+        .spancontainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #subjectTitle {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+        .content {
+            padding-top: 10px !important;
+        }
+        .chapter-container {
+            margin-bottom: 20px;
+        }
+        .section-container {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .box {
+            margin-bottom: 10px;
+        }
+        
+        .icon-wrapper {
+            position: relative !important;
+            width: 47px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header with back button and 'Chapters' title -->
+    <nav class="navbar">
+        <div class="back-button icon-wrapper"
+            onclick="window.location.href='subject.html?board=' + encodeURIComponent(board) + '&class=' + encodeURIComponent(userClass) + '&type=' + encodeURIComponent(type);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </div>
+        <div class="title">
+            <h2>Chapters</h2>
+        </div>
+    </nav>
+
+    <div class="spancontainer">
+        <span id="subjectTitle"></span>
+    </div>
+
+    <!-- Main Content: Chapters List -->
+    <section class="chapter-container" id="chapterContainer">
+        <!-- Chapters and sections will be populated dynamically here -->
+    </section>
+
+    <!-- Bottom Navbar -->
+    <div id="bottom-navbar"></div> <!-- Placeholder for the navbar -->
+
+    <!-- Script for handling navbar and dynamic chapter listing -->
+    <script src="script.js"></script>
+
+    <script>
+    // Get board, class, subject, and type from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const board = urlParams.get('board');
+    const userClass = urlParams.get('class');
+    let subject = urlParams.get('subject');
+    const type = urlParams.get('type');
+
+    // Handle spaces in subject name (replace with underscores for file matching)
+    subject = subject.replace(/\s+/g, '_');
+
+    // Set up the back button functionality
+    document.querySelector('.back-button').onclick = function () {
+        window.location.href = `subject.html?board=${board}&class=${userClass}&type=${type}`;
+    };
+
+    // Display the subject name in the title
+    document.getElementById('subjectTitle').textContent = subject.replace(/_/g, ' '); // Show subject name with spaces
+
+    // Fetch the chapters from the CSV file
+    const csvFilePath = `Chapters/chapters_${board}_${userClass}_${subject}.csv`;
+    console.log(`Fetching chapters from: ${csvFilePath}`); // Debug: log the file path
+
+    fetch(csvFilePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(csvData => {
+            const rows = csvData.split('\n');
+            const chapterContainer = document.getElementById('chapterContainer');
+            let currentSection = null;
+
+            rows.forEach(row => {
+                const [sectionOrId, name] = row.split(',', 2);
+
+                if (sectionOrId.toLowerCase() === 'section' && name) {
+                    // This is a section header (e.g., "Varnika", "Godhuli")
+                    const sectionBox = document.createElement('div');
+                    sectionBox.className = 'section-container';
+                    sectionBox.innerHTML = `<h3>${name.trim()}</h3>`;
+                    chapterContainer.appendChild(sectionBox);
+                    currentSection = sectionBox; // Set this as the current section container
+                } else if (name) {
+                    // This is a chapter under the current section
+                    const chapterBox = document.createElement('div');
+                    chapterBox.className = 'chapter-box';
+                    chapterBox.innerHTML = `<h4>${sectionOrId.trim()} ${name.trim()}</h4>`;
+                    if (currentSection) {
+                        currentSection.appendChild(chapterBox); // Add to the current section
+                    } else {
+                        chapterContainer.appendChild(chapterBox); // Add directly if no section
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error loading chapters:', error));
+
+    // Track the current chapter page URL
+    localStorage.setItem('lastPage', window.location.href);
+    // Store subject in localStorage
+    localStorage.setItem('selectedSubject', subject.replace(/_/g, ' ')); // Store subject with spaces
+    </script>
+
+</body>
+
+</html>
+
+
+cahp[ter.css
+.chapter-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.section-container {
+    background-color: #353535;
+    border: 2px solid #353535;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.chapter-box {
+    display: flex;
+    justify-content: space-between; /* Ensure content and icon are on opposite sides */
+    align-items: center; /* Vertically center the icon and text */
+    background-color: #353535;
+    border: 1px solid #474747;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+    padding: 5px 0;
+    color: #ffffff;
+}
+
+/* Style for the chevron icon */
+.chapter-box i {
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-align: right;
+}
+]
+
+
+chapter.html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapters</title>
+    <link rel="stylesheet" href="styles.css"> <!-- General styles for navbar and body -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            padding-top: 110px !important;
+        }
+
+        .title h2 {
+            font-size: 1.8rem;
+        }
+
+        .navbar {
+            padding-left: 10px !important;
+            padding-block: 22px !important;
+        }
+
+        .spancontainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #subjectTitle {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .content {
+            padding-top: 10px !important;
+        }
+
+        .chapter-container {
+            margin-bottom: 20px;
+        }
+
+        .section-container {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .box {
+            margin-bottom: 10px;
+        }
+
+        .icon-wrapper {
+            position: relative !important;
+            width: 47px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Header with back button and 'Chapters' title -->
+    <nav class="navbar">
+        <div class="back-button icon-wrapper"
+            onclick="window.location.href='subject.html?board=' + encodeURIComponent(board) + '&class=' + encodeURIComponent(userClass) + '&type=' + encodeURIComponent(type);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </div>
+        <div class="title">
+            <h2>Chapters</h2>
+        </div>
+    </nav>
+
+    <div class="spancontainer">
+        <span id="subjectTitle"></span>
+    </div>
+
+    <!-- Main Content: Chapters List -->
+    <section class="chapter-container" id="chapterContainer">
+        <!-- Chapters and sections will be populated dynamically here -->
+    </section>
+
+    <!-- Bottom Navbar -->
+    <div id="bottom-navbar"></div> <!-- Placeholder for the navbar -->
+
+    <!-- Script for handling navbar and dynamic chapter listing -->
+    <script src="script.js"></script>
+
+    <script>
+    // Get board, class, subject, and type from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const board = urlParams.get('board');
+    const userClass = urlParams.get('class');
+    let subject = urlParams.get('subject');
+    const type = urlParams.get('type');
+
+    // Handle spaces in subject name (replace with underscores for file matching)
+    subject = subject.replace(/\s+/g, '_');
+
+    // Set up the back button functionality
+    document.querySelector('.back-button').onclick = function () {
+        window.location.href = `subject.html?board=${board}&class=${userClass}&type=${type}`;
+    };
+
+    // Display the subject name in the title
+    document.getElementById('subjectTitle').textContent = subject.replace(/_/g, ' '); // Show subject name with spaces
+
+    // Fetch the chapters from the CSV file
+    const csvFilePath = `Chapters/chapters_${board}_${userClass}_${subject}.csv`;
+    console.log(`Fetching chapters from: ${csvFilePath}`); // Debug: log the file path
+
+    fetch(csvFilePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(csvData => {
+            const rows = csvData.split('\n');
+            const chapterContainer = document.getElementById('chapterContainer');
+            let currentSection = null;
+
+            rows.forEach(row => {
+                const [sectionOrId, name] = row.split(',', 2);
+
+                if (sectionOrId.toLowerCase() === 'section' && name) {
+                    // This is a section header (e.g., "Varnika", "Godhuli")
+                    const sectionBox = document.createElement('div');
+                    sectionBox.className = 'section-container';
+                    sectionBox.innerHTML = `<h3>${name.trim()}</h3>`;
+                    chapterContainer.appendChild(sectionBox);
+                    currentSection = sectionBox; // Set this as the current section container
+                } else if (name) {
+                    // This is a chapter under the current section
+                    const chapterBox = document.createElement('div');
+                    chapterBox.className = 'chapter-box';
+                    chapterBox.innerHTML = `<h4>${sectionOrId.trim()} ${name.trim()}</h4><i class="fa-solid fa-chevron-right"></i>`; // Add the icon here
+                    if (currentSection) {
+                        currentSection.appendChild(chapterBox); // Add to the current section
+                    } else {
+                        chapterContainer.appendChild(chapterBox); // Add directly if no section
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error loading chapters:', error));
+
+    // Track the current chapter page URL
+    localStorage.setItem('lastPage', window.location.href);
+    // Store subject in localStorage
+    localStorage.setItem('selectedSubject', subject.replace(/_/g, ' ')); // Store subject with spaces
+    </script>
+
+</body>
+
+</html>
+
+
+chaapter.html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapters</title>
+    <link rel="stylesheet" href="styles.css"> <!-- General styles for navbar and body -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            padding-top: 110px !important;
+        }
+
+        .title h2 {
+            font-size: 1.8rem;
+        }
+
+        .navbar {
+            padding-left: 10px !important;
+            padding-block: 22px !important;
+        }
+
+        .spancontainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #subjectTitle {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .content {
+            padding-top: 10px !important;
+        }
+
+        .chapter-container {
+            margin-bottom: 20px;
+            padding-top: 6px !important;
+        }
+
+        .section-container {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .box {
+            margin-bottom: 10px;
+        }
+
+        .icon-wrapper {
+            position: relative !important;
+            width: 47px;
+        }
+
+        .chapter-box {
+            cursor: pointer; /* Make chapter boxes clickable */
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Header with back button and 'Chapters' title -->
+    <nav class="navbar">
+        <div class="back-button icon-wrapper"
+            onclick="window.location.href='subject.html?board=' + encodeURIComponent(board) + '&class=' + encodeURIComponent(userClass) + '&type=' + encodeURIComponent(type);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </div>
+        <div class="title">
+            <h2>Chapters</h2>
+        </div>
+    </nav>
+
+    <div class="spancontainer">
+        <span id="subjectTitle"></span>
+    </div>
+
+    <!-- Main Content: Chapters List -->
+    <section class="chapter-container" id="chapterContainer">
+        <!-- Chapters and sections will be populated dynamically here -->
+    </section>
+
+    <!-- Bottom Navbar -->
+    <div id="bottom-navbar"></div> <!-- Placeholder for the navbar -->
+
+    <!-- Script for handling navbar and dynamic chapter listing -->
+    <script src="script.js"></script>
+
+    <script>
+    // Get board, class, subject, and type from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const board = urlParams.get('board');
+    const userClass = urlParams.get('class');
+    let subject = urlParams.get('subject');
+    const type = urlParams.get('type');
+
+    // Handle spaces in subject name (replace with underscores for file matching)
+    subject = subject.replace(/\s+/g, '_');
+
+    // Set up the back button functionality
+    document.querySelector('.back-button').onclick = function () {
+        window.location.href = `subject.html?board=${board}&class=${userClass}&type=${type}`;
+    };
+
+    // Display the subject name in the title
+    document.getElementById('subjectTitle').textContent = subject.replace(/_/g, ' '); // Show subject name with spaces
+
+    // Fetch the chapters from the CSV file
+    const csvFilePath = `Chapters/chapters_${board}_${userClass}_${subject}.csv`;
+    console.log(`Fetching chapters from: ${csvFilePath}`); // Debug: log the file path
+
+    fetch(csvFilePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(csvData => {
+            const rows = csvData.split('\n');
+            const chapterContainer = document.getElementById('chapterContainer');
+            let currentSection = null;
+
+            rows.forEach(row => {
+                const [sectionOrId, name] = row.split(',', 2);
+
+                if (sectionOrId.toLowerCase() === 'section' && name) {
+                    // This is a section header (e.g., "Varnika", "Godhuli")
+                    const sectionBox = document.createElement('div');
+                    sectionBox.className = 'section-container';
+                    sectionBox.innerHTML = `<h3>${name.trim()}</h3>`;
+                    chapterContainer.appendChild(sectionBox);
+                    currentSection = sectionBox; // Set this as the current section container
+                } else if (name) {
+                    // This is a chapter under the current section
+                    const chapterBox = document.createElement('div');
+                    chapterBox.className = 'chapter-box';
+                    chapterBox.innerHTML = `<h4>${sectionOrId.trim()} ${name.trim()}</h4><i class="fa-solid fa-chevron-right"></i>`; // Add the icon here
+                    chapterBox.dataset.page = `${type}.html`; // Store the type in a data attribute
+                    if (currentSection) {
+                        currentSection.appendChild(chapterBox); // Add to the current section
+                    } else {
+                        chapterContainer.appendChild(chapterBox); // Add directly if no section
+                    }
+                }
+            });
+
+            // Add click event listeners to chapter boxes
+            document.querySelectorAll('.chapter-box').forEach(box => {
+                box.addEventListener('click', function () {
+                    const pageType = this.dataset.page;
+                    window.location.href = `${pageType}?board=${board}&class=${userClass}&subject=${subject}`;
+                });
+            });
+        })
+        .catch(error => console.error('Error loading chapters:', error));
+
+    // Track the current chapter page URL
+    localStorage.setItem('lastPage', window.location.href);
+    // Store subject in localStorage
+    localStorage.setItem('selectedSubject', subject.replace(/_/g, ' ')); // Store subject with spaces
+    </script>
+
+</body>
+
+</html>
